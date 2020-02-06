@@ -131,6 +131,10 @@
     from user_info
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectByPhone" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select * from user_info
+    where phone = #{phone}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     <!--
       WARNING - @mbggenerated

@@ -93,4 +93,6 @@ public interface UserInfoMapper {
      * @mbggenerated Sun Feb 02 10:33:48 CST 2020
      */
     int updateByPrimaryKey(UserInfo record);
+
+    UserInfo selectByPhone(String phone);
 }
