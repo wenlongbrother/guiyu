@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.geek.guiyu.infrastructure.dao.UserFileDao">
+
+    <resultMap type="com.geek.guiyu.domain.model.UserFile" id="UserFileMap">
+        <result property="id" column="id" jdbcType="OTHER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="deleted" column="deleted" jdbcType="OTHER"/>
+        <result property="fileUrl" column="file_url" jdbcType="VARCHAR"/>
+        <result property="topic" column="topic" jdbcType="VARCHAR"/>
+        <result property="describe" column="describe" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="OTHER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="UserFileMap">
+        select
+          id, create_time, update_time, deleted, file_url, topic, describe, user_id
+        from guiyu.user_file
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="UserFileMap">
+        select
+          id, create_time, update_time, deleted, file_url, topic, describe, user_id
+        from guiyu.user_file
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="UserFileMap">
+        select
+          id, create_time, update_time, deleted, file_url, topic, describe, user_id
+        from guiyu.user_file
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="deleted != null">
+                and deleted = #{deleted}
+            </if>
+            <if test="fileUrl != null and fileUrl != ''">
+                and file_url = #{fileUrl}
+            </if>
+            <if test="topic != null and topic != ''">
+                and topic = #{topic}
+            </if>
+            <if test="describe != null and describe != ''">
+                and describe = #{describe}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into guiyu.user_file(create_time, update_time, deleted, file_url, topic, describe, user_id)
+        values (#{createTime}, #{updateTime}, #{deleted}, #{fileUrl}, #{topic}, #{describe}, #{userId})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update guiyu.user_file
+        <set>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="deleted != null">
+                deleted = #{deleted},
+            </if>
+            <if test="fileUrl != null and fileUrl != ''">
+                file_url = #{fileUrl},
+            </if>
+            <if test="topic != null and topic != ''">
+                topic = #{topic},
+            </if>
+            <if test="describe != null and describe != ''">
+                describe = #{describe},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from guiyu.user_file where id = #{id}
+    </delete>
+
+</mapper>

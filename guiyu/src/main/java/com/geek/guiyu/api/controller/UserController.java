@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.geek.guiyu.domain.dataobject.LoginDTO;
 import com.geek.guiyu.domain.dataobject.PhoneDTO;
 import com.geek.guiyu.domain.dataobject.RegisterDTO;
+import com.geek.guiyu.domain.dataobject.UserEditInfoDTO;
 import com.geek.guiyu.domain.exception.AlreadyRegisterException;
 import com.geek.guiyu.domain.exception.NoPhoneException;
 import com.geek.guiyu.domain.exception.ShortMessageException;
@@ -15,25 +16,92 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
 public class UserController {
     @Autowired
-    UserServce userServce;
+    private UserServce userServce;
 
+    /**
+     * 短信controller层
+     * @param phoneDTO
+     * @return
+     * @throws AlreadyRegisterException
+     * @throws NoPhoneException
+     */
     @GetMapping("/getShortMessage")
     public JSONObject getShortMessage(PhoneDTO phoneDTO) throws AlreadyRegisterException, NoPhoneException {
         return JSONUtils.success(userServce.shortMessage(phoneDTO));
     }
 
+    /**
+     * 注册controller层
+     * @param registerDTO
+     * @return
+     * @throws ShortMessageException
+     * @throws AlreadyRegisterException
+     */
     @PostMapping("/register")
-    public JSONObject register(@RequestBody RegisterDTO registerDTO) throws ShortMessageException {
+    public JSONObject register(@RequestBody RegisterDTO registerDTO) throws ShortMessageException, AlreadyRegisterException {
         return JSONUtils.success(userServce.register(registerDTO));
     }
 
+    /**
+     * 登录controller层
+     * @param loginDTO
+     * @return
+     * @throws ShortMessageException
+     * @throws NoPhoneException
+     */
     @PostMapping("/login")
     public JSONObject login(@RequestBody LoginDTO loginDTO) throws ShortMessageException, NoPhoneException {
         return JSONUtils.success(userServce.login(loginDTO));
+    }
+
+    /**
+     * 修改资料controller层
+     * @param request
+     * @param userEditInfoDTO
+     * @return
+     */
+    @PostMapping("/updateUserInfo")
+    public JSONObject updateUserInfo(HttpServletRequest request, @RequestBody UserEditInfoDTO userEditInfoDTO){
+        String token = request.getHeader("token");
+        return JSONUtils.success(userServce.editUserInfo(token, userEditInfoDTO));
+    }
+
+    /**
+     * 查询用户信息controller层
+     * @param request
+     * @return
+     */
+    @GetMapping("/getUserInfo")
+    public JSONObject queryUserInfo(HttpServletRequest request){
+        String token = request.getHeader("token");
+        return JSONUtils.success(userServce.queryUserInfo(token));
+    }
+
+    /**
+     * 查询用户关注controller层
+     * @param request
+     * @return
+     */
+    @GetMapping("/getUserFollow")
+    public JSONObject queryUserFollow(HttpServletRequest request){
+        String token = request.getHeader("token");
+        return JSONUtils.success(userServce.queryFollows(token));
+    }
+
+    /**
+     * 查询用户粉丝
+     * @param request
+     * @return
+     */
+    @GetMapping("/getUserFans")
+    public JSONObject queryUserFans(HttpServletRequest request){
+        String token = request.getHeader("token");
+        return JSONUtils.success(userServce.queryFans(token));
     }
 }

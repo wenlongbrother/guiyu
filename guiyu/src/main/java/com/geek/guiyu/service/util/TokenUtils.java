@@ -23,6 +23,11 @@ public class TokenUtils {
         // 生成token
         String token = uuid.toString().replace("-", "");
         redisTemplate.opsForValue().set("userToken:" + token, userInfo);
+
         return new TokenDTO(token);
+    }
+
+    public UserInfo getUserInfo(String token){
+        return (UserInfo) redisTemplate.opsForValue().get("userToken:" + token);
     }
 }
